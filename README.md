@@ -1,5 +1,5 @@
 # Journey Map Data Merger
-Merge Map and Waypoints, effortlessly!
+Merge Map and Waypoints from multiple people/timestamps/devices, effortlessly!
 
 ## Usage
 1. Install [Python](https://www.python.org/) - [MS Store](https://apps.microsoft.com/detail/9ncvdn91xzqp?hl=en-US&gl=US)
@@ -73,5 +73,6 @@ Because you shouldn't. Simple as that. Just rename the folders so they fit.
 
 ### Why is there blatant AI usage in the source code
 Programming is IMO not art. It is utility. Guess why Kevin MacLeod started using AI for music, he saw it as utility.
+
 
 Anyways that's besides the point. I was programming this sometimes only half awake and at some point I just didn't want to write the annoying parts and relearn some module only for basic things to work. AI was only really helpful in first setting up argparse and somehow getting PNGJ to accept the files created with ImageMagick. I don't think I really used it for something else.
