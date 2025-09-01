@@ -42,6 +42,11 @@ parser.add_argument(
     action="store_true",
     help="Enable Debug Logs for specific scenarios (Currently only ImageMagick Child Processes)"
 )
+parser.add_argument(
+    "-y", "--yes", 
+    action="store_true",
+    help="Do not ask for confirmation before merging. Highly discouraged to be used by non-developers."
+)
 
 # Parse the command-line arguments
 args = parser.parse_args()
@@ -229,6 +234,27 @@ def waypoint_get_merge_save(outRoot: Path, inRoots: list[Path]):
     ins = get_waypoints(*inRoots)
     merge_waypoint_data_and_save(outs, *ins)
 
+def getUserYesNo():
+    while True:
+        answer = input('type "yes" to continue, "no" to cancel. Then press enter/return.\n')
+        match answer.lower():
+            case 'y':
+                return True
+            case 'yes':
+                return True
+            case 'confirm':
+                return True
+            case 'n':
+                return False
+            case 'no':
+                return False
+            case 'nope':
+                return False
+            case 'not':
+                return False
+            case _:
+                print('Try again.')
+
 if __name__ == '__main__':
     outPath = Path(args.OUT)
     inputPaths = [Path(args.LAYER), *map(lambda x : Path(x), args.LAYERS)]
@@ -255,6 +281,11 @@ if __name__ == '__main__':
         print('- Accidental Escaping. Backslash (\\) is used for escaping characters, and Windows Paths include those. Escaping means a quote like " or \' looses it\'s meaning as "End of text". Even the Python provided sys.argv cannot deal with them. To prevent escaping, replace \\ with \\\\, as this escapes the escape. You should also remove the trailing \\ at the end of paths')
         exit(1)
 
+    if outPath.is_file():
+        safeToContinue = True
+        print(f'{tcol.RED}Output path is a file.{tcol.RESET} Use a different path or delete it first.')
+        exit(1)
+
     # Check if given paths are only ever given ONCE.
     allPaths = [outPath, *inputPaths]
     duplicatePaths = set()
@@ -268,6 +299,46 @@ if __name__ == '__main__':
         for i in duplicatePaths:
             print(i)
         exit(2)
+
+    # Let's ask the user some questions first
+
+    if not args.yes:
+        # Confirm Paths
+        print(f'Output Path: {str(outPath)}')
+        stringedInputPaths = list(map(lambda x : str(x.absolute()), inputPaths))
+        print(f'Input Paths: \n- {'\n- '.join(stringedInputPaths)}')
+        print('')
+        print('Do you confirm these paths?')
+        if not getUserYesNo():
+            print('Cancelling!')
+            exit(0)
+
+        # Confirm output folder has files
+        if bool(list(outPath.iterdir())):
+            print('')
+            print(f'The output folder already has files! Are you sure you want to {tcol.RED}overwrite and permanently delete the files?{tcol.RESET}')
+            if not getUserYesNo():
+                print('Cancelling!')
+                exit(0)
+
+        # We will merge these things btw
+        print('')
+        print('We will merge the following:')
+        if args.map:
+            print('- World Map')
+        if args.waypoints:
+            print('- Waypoints (including Groups)')
+        if (args.map == False and args.waypoints == False):
+            print('- World Map')
+            print('- Waypoints (including Groups)')
+        
+        print('')
+        print(f'This is your {tcol.YELLOW}last confirmation{tcol.RESET} that everything you specified is correct. After that the script will run as expected.')
+        if not getUserYesNo():
+            print('Cancelling!')
+            exit(0)
+
+    # All good? Let's go with the rest of the maps
 
     print('All good, starting the merging process... (spam Ctrl-C to cancel)')
     os.makedirs(str(outPath.parent), exist_ok=True)
@@ -294,7 +365,7 @@ if __name__ == '__main__':
     print('')
     # https://stackoverflow.com/a/33206814
     print(f'{tcol.RED}LEGAL DISCLAIMER{tcol.RESET}')
-    print("If it was actually successful is something you have to check yourself. This script did what I told it to do, so now it's your due diligence to check it did everything as you want it to be done.")
+    print("If it was actually successful is something you have to check yourself. This script did what we told it to do, so now it's your due diligence to check it did everything as you want it to be done.")
     print("ALWAYS KEEP BACKUPS. ALWAYS.")
-    print("I HAVE NO LIABILITY IF IT WASN'T ABLE TO MERGE. But if it did fail, please open an issue on GitHub with all relevant details, thanks!")
+    print("WE HAVE NO LIABILITY IF IT WASN'T ABLE TO MERGE. But if it did fail, please open an issue on GitHub with all relevant details, thanks!")
     print('')
