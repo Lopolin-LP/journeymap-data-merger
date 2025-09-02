@@ -314,7 +314,7 @@ if __name__ == '__main__':
             exit(0)
 
         # Confirm output folder has files
-        if bool(list(outPath.iterdir())):
+        if outPath.is_dir() and bool(list(outPath.iterdir())):
             print('')
             print(f'The output folder already has files! Are you sure you want to {tcol.RED}overwrite and permanently delete the files?{tcol.RESET}')
             if not getUserYesNo():
