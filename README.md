@@ -1,6 +1,14 @@
 # Journey Map Data Merger
 Merge Map and Waypoints from multiple people/timestamps/devices, effortlessly!
 
+
+## Video
+<div style='display: flex; justify-content: center;'>
+  <a style='width: 50%;' href='https://youtu.be/0U_hZx94AL4' target='_blank'>
+    <img src='./thumbnail.png'>
+  </a>
+</div>
+
 ## Usage
 1. Install [Python](https://www.python.org/) - [MS Store](https://apps.microsoft.com/detail/9ncvdn91xzqp?hl=en-US&gl=US)
 2. Install [ImageMagick](https://imagemagick.org/) - No MS Store
